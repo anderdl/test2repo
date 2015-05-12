@@ -6,13 +6,37 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.generic.base import RedirectView
 from django.core.urlresolvers import reverse
-
+from example_project.views import *
 from .models import Photo, Gallery
 
 
+
+# Number of galleries to display per page.
+
+GALLERY_PAGINATE_BY = getattr(settings, 'PHOTOLOGUE_GALLERY_PAGINATE_BY', 20)
+
+if GALLERY_PAGINATE_BY != 20:
+    warnings.warn(
+        DeprecationWarning('PHOTOLOGUE_GALLERY_PAGINATE_BY setting will be removed in Photologue 3.2'))
+
+# Number of photos to display per page.
+PHOTO_PAGINATE_BY = getattr(settings, 'PHOTOLOGUE_PHOTO_PAGINATE_BY', 20)
+
+if PHOTO_PAGINATE_BY != 20:
+    warnings.warn(
+        DeprecationWarning('PHOTOLOGUE_PHOTO_PAGINATE_BY setting will be removed in Photologue 3.2'))
+
 # Gallery views.
+class DisplayTaskView(ListView):
+    queryset = Gallery.objects.on_site().is_public()
+    paginate_by = GALLERY_PAGINATE_BY
+    template_name = "home/index.html" #Change Anything
 
-
+    def get_context_data(self, **kwargs):
+        context = super(DisplayTaskView, self).get_context_data(**kwargs)
+        context['configuration'] = configuration()
+        return context
+        
 class GalleryListView(ListView):
     queryset = Gallery.objects.on_site().is_public()
     paginate_by = 20
