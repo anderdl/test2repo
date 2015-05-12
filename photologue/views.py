@@ -1,5 +1,5 @@
 import warnings
-
+from django.conf import settings
 from django.views.generic.dates import ArchiveIndexView, DateDetailView, DayArchiveView, MonthArchiveView, \
     YearArchiveView
 from django.views.generic.detail import DetailView
